@@ -1,16 +1,14 @@
 package map256
 
 import (
-
 	"fmt"
 )
-
-type Node struct  {
+type Node256 struct  {
 	Data interface{}
-        Nodes [256]*Node
+        Nodes [256]*Node256
 }
 
-func (this *Node)String(key_this []byte)string{
+func (this *Node256)String(key_this []byte)string{
 	str:=""
 	if(this==nil){
 		return str;
@@ -26,7 +24,7 @@ func (this *Node)String(key_this []byte)string{
 	}
 	return str
 }
-func (this *Node)Put(key []byte,data interface{}){
+func (this *Node256)Put(key []byte,data interface{}){
 
 	l:=len(key)
 	if(l<1){
@@ -39,16 +37,16 @@ func (this *Node)Put(key []byte,data interface{}){
 		this.Nodes[nodekey].Put(key,data)
 	}else {
 		if(this.Nodes[nodekey]==nil){
-			this.Nodes[nodekey]=&Node{}
+			this.Nodes[nodekey]=&Node256{}
 		}
 		this.Nodes[nodekey].Data=data
 
 	}
 }
-func (this *Node)Exist(key []byte)bool{
+func (this *Node256)Exist(key []byte)bool{
 	return (this.Get(key)!=nil)
 }
-func (this *Node)Get(key []byte)(interface{}){
+func (this *Node256)Get(key []byte)(interface{}){
 
 	l:=len(key)
 	if(l<1){
@@ -66,6 +64,6 @@ func (this *Node)Get(key []byte)(interface{}){
 		return this.Nodes[nodekey].Data
 	}
 }
-func (this *Node)Del(key []byte){
+func (this *Node256)Del(key []byte){
 	this.Put(key,nil)
 }
