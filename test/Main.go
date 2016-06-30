@@ -14,7 +14,7 @@ func main() {
 
 	fmt.Println(m.String())
 	fmt.Println(m.Len())
-	m.Del([]byte("1"))
-
+	m.Del([]byte("1234"))
+	fmt.Println(m.String())
 
 }

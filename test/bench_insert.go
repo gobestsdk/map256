@@ -18,8 +18,6 @@ func main() {
 	testinsert(20000000)
 	testinsert(30000000)
 	testinsert(40000000)
-
-
 }
 func testinsert(count int){
 	var c=make(chan string,2)

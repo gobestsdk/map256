@@ -2,11 +2,10 @@ package map256
 
 import (
 	"fmt"
-	"sync"
+
 )
 
 type Node256 struct  {
-	mutex sync.Mutex
 	Data interface{}
         Nodes []*Node256
 }
@@ -40,7 +39,7 @@ func (this *Node256)Len()int{
 	return l
 }
 func (this *Node256)Put(key []byte,data interface{}){
-	this.mutex.Lock()
+
 	l:=len(key)
 	if(l==0){
 		this.Data=data
@@ -58,14 +57,13 @@ func (this *Node256)Put(key []byte,data interface{}){
 		}
 		this.Nodes[nodekey].Put(key[1:],data)
 	}
-	defer this.mutex.Unlock()
+
 }
 func (this *Node256)Exist(key []byte)bool{
 	return (this.Get(key)!=nil)
 }
 func (this *Node256)Get(key []byte)(interface{}){
-	this.mutex.Lock()
-	defer this.mutex.Unlock()
+
 	l:=len(key)
 	if(l==0){
 		return this.Data
