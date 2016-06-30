@@ -2,10 +2,13 @@ package map256
 
 import (
 	"fmt"
+	"sync"
 )
+
 type Node256 struct  {
+	mutex sync.Mutex
 	Data interface{}
-        Nodes [256]*Node256
+        Nodes []*Node256
 }
 
 func (this *Node256)String(key_this []byte)string{
@@ -24,45 +27,61 @@ func (this *Node256)String(key_this []byte)string{
 	}
 	return str
 }
-func (this *Node256)Put(key []byte,data interface{}){
-
-	l:=len(key)
-	if(l<1){
-		return
+func (this *Node256)Len()int{
+	l:=0
+	for k,_:=range this.Nodes{
+		if(this.Nodes[k]!=nil){
+			if(this.Nodes[k].Data!=nil){
+				l++
+			}
+			l+=this.Nodes[k].Len()
+		}
 	}
-	nodekey :=key[0]
-
-
-	if(l>1){
-		this.Nodes[nodekey].Put(key,data)
+	return l
+}
+func (this *Node256)Put(key []byte,data interface{}){
+	this.mutex.Lock()
+	l:=len(key)
+	if(l==0){
+		this.Data=data
 	}else {
+		nodekey :=uint8(key[0])
+		if(this==nil) {
+			this = &Node256{}
+		}
+		if(len(this.Nodes)!=256){
+			this.Nodes=make([]*Node256,256)
+		}
+
 		if(this.Nodes[nodekey]==nil){
 			this.Nodes[nodekey]=&Node256{}
 		}
-		this.Nodes[nodekey].Data=data
-
+		this.Nodes[nodekey].Put(key[1:],data)
 	}
+	defer this.mutex.Unlock()
 }
 func (this *Node256)Exist(key []byte)bool{
 	return (this.Get(key)!=nil)
 }
 func (this *Node256)Get(key []byte)(interface{}){
-
+	this.mutex.Lock()
+	defer this.mutex.Unlock()
 	l:=len(key)
-	if(l<1){
-		return nil
-	}
-	nodekey :=key[0]
-
-
-	if(this.Nodes[nodekey]==nil){
-		return nil
-	}
-	if(l>1){
-		return this.Nodes[nodekey].Get(key[1:])
+	if(l==0){
+		return this.Data
 	}else {
-		return this.Nodes[nodekey].Data
+		if (l < 1) {
+			return nil
+		}
+		nodekey := key[0]
+
+		if (this.Nodes[nodekey] == nil) {
+			return nil
+		}
+		return this.Nodes[nodekey].Get(key[1:])
 	}
+
+
 }
 func (this *Node256)Del(key []byte){
 	this.Put(key,nil)

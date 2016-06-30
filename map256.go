@@ -3,7 +3,7 @@ package map256
 
 
 type Map256  struct{
-	Nodes [256]*Node
+	Nodes []*Node256
 }
 func (this *Map256)String()string{
 	str:=""
@@ -15,19 +15,38 @@ func (this *Map256)String()string{
 	}
 	return str
 }
+func (this *Map256)Len()int{
+	l:=0
+	for k,_:=range this.Nodes{
+		if(this.Nodes[k]!=nil){
+			if(this.Nodes[k].Data!=nil){
+				l++
+			}
+			l+=this.Nodes[k].Len()
+		}
+	}
+	return l
+}
 func (this *Map256)Put(key []byte,data interface{}){
 	l:=len(key)
-	if(l<1){
+	if(l==0){
 		return
 	}
 	nodekey :=key[0]
 
+	if(this==nil) {
+		this = &Map256{}
+	}
+	if(len(this.Nodes)!=256){
+		this.Nodes=make([]*Node256,256)
+	}
+	if(this.Nodes[nodekey]==nil){
+		this.Nodes[nodekey]=&Node256{}
+	}
+
 	if(l>1){
 		this.Nodes[nodekey].Put(key[1:],data)
 	}else {
-		if(this.Nodes[nodekey]==nil){
-			this.Nodes[nodekey]=&Node{}
-		}
 		this.Nodes[nodekey].Data=data
 	}
 }

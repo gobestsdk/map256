@@ -7,13 +7,13 @@ import (
 
 func main() {
 	m:=map256.Map256{}
-	m.Put([]byte("1"),"我是李鹏")
 
-	m.Put([]byte("12"),"我是李鹏爸爸")
-	m.Put([]byte("4"),true)
-	m.Put([]byte("5"),324)
+	m.Put([]byte("123"),"我是李鹏爸爸")
+	m.Put([]byte("1234"),true)
+	m.Put([]byte("123456"),324)
 
-	fmt.Print(m.String())
+	fmt.Println(m.String())
+	fmt.Println(m.Len())
 	m.Del([]byte("1"))
 
 
